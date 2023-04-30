@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    History
+{% endblock %}
+
+{% block main %}
+    <!--There is no method specified. it should be ok
+    Will leave div class mb3 for now-->
+    <form action="/histroy" method="get">
+        <div class="row justify-content-center">
+            <p>Most Recent Program</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Label</th>
+                        <th>Format</th>
+                        <th>Number</th>
+                        <th>Period</th>
+                        <th>Composer</th>
+                        <th>Work</th>
+                        <th>Performers</th>
+                        <th>Duration (In Minutes)</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <!--Last two are straight list here. trying to go through each since there all same length-->
+                    <!--totals|length gives its length. batch should make a new row every 5 items | batch(5, '&nbsp;'-->
+                    {% for i in range(0, HISTORY_1|length) %}
+                    <tr>
+                        <td class="td">{{ HISTORY_1[i]["Label"] }}</td>
+                        <td class="td">{{ HISTORY_1[i]["Format"] }}</td>
+                        <td class="td">{{ HISTORY_1[i]["Number"] }}</td>
+                        <td class="td">{{ HISTORY_1[i]["Period"] }}</td>
+                        <td class="td">{{ HISTORY_1[i]["Composer"] }}</td>
+                        <td class="td">{{ HISTORY_1[i]["Work"] }}</td>
+                        <td class="td">{{ HISTORY_1[i]["Performers"] }}</td>
+                        <td class="td">{{ HISTORY_1[i]["Time"] }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+            <p>Program before the last</p>
+            <table>
+                <tbody>
+                    {% for i in range(0, HISTORY_2|length) %}
+                    <tr>
+                        <td class="td">{{ HISTORY_2[i]["Label"] }}</td>
+                        <td class="td">{{ HISTORY_2[i]["Format"] }}</td>
+                        <td class="td">{{ HISTORY_2[i]["Number"] }}</td>
+                        <td class="td">{{ HISTORY_2[i]["Period"] }}</td>
+                        <td class="td">{{ HISTORY_2[i]["Composer"] }}</td>
+                        <td class="td">{{ HISTORY_2[i]["Work"] }}</td>
+                        <td class="td">{{ HISTORY_2[i]["Performers"] }}</td>
+                        <td class="td">{{ HISTORY_2[i]["Time"] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </form>
+{% endblock %}
