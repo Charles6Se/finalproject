@@ -9,18 +9,20 @@
     Will leave div class mb3 for now-->
     <form action="/histroy" method="get">
         <div class="row justify-content-center">
-            <p>Most Recent Program</p>
+            <p>
+                <h2>Most Recent Program</h2>
+            </p>
             <table>
                 <thead>
                     <tr>
-                        <th>Label</th>
-                        <th>Format</th>
-                        <th>Number</th>
-                        <th>Period</th>
-                        <th>Composer</th>
-                        <th>Work</th>
-                        <th>Performers</th>
-                        <th>Duration (In Minutes)</th>
+                        <th>LABEL</th>
+                        <th>FORMAT</th>
+                        <th>NUMBER</th>
+                        <th>PERIOD</th>
+                        <th>COMPOSER</th>
+                        <th>WORK</th>
+                        <th>PERFORMERS</th>
+                        <th>DURATION (IN MINUTES)</th>
                     </tr>
                 </thead>
 
@@ -39,12 +41,35 @@
                         <td class="td">{{ HISTORY_1[i]["Time"] }}</td>
                     </tr>
                     {% endfor %}
+                    <tr>
+                        <td class="td"></td>
+                        <td class="td"></td>
+                        <td class="td"></td>
+                        <td class="td"></td>
+                        <td class="td"></td>
+                        <td class="td"></td>
+                        <td class="td"></td>
+                        <td class="td">Total Time: {{ TOTAL_TIME_1 }}</td>
                     </tr>
                 </tbody>
             </table>
             <br>
-            <p>Program before the last</p>
+            <p>
+                <h2>Program before the last</h2>
+            </p>
             <table>
+                <thead>
+                    <tr>
+                        <th>LABEL</th>
+                        <th>FORMAT</th>
+                        <th>NUMBER</th>
+                        <th>PERIOD</th>
+                        <th>COMPOSER</th>
+                        <th>WORK</th>
+                        <th>PERFORMERS</th>
+                        <th>DURATION (IN MINUTES)</th>
+                    </tr>
+                </thead>
                 <tbody>
                     {% for i in range(0, HISTORY_2|length) %}
                     <tr>
@@ -58,6 +83,16 @@
                         <td class="td">{{ HISTORY_2[i]["Time"] }}</td>
                     </tr>
                     {% endfor %}
+                    <tr>
+                        <td class="td"></td>
+                        <td class="td"></td>
+                        <td class="td"></td>
+                        <td class="td"></td>
+                        <td class="td"></td>
+                        <td class="td"></td>
+                        <td class="td"></td>
+                        <td class="td">Total Time: {{ TOTAL_TIME_2 }}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>

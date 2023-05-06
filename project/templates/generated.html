@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Generated
+{% endblock %}
+
+{% block main %}
+
+            <!--I wrote all this JS do delete values but I had to change it to python function so the value changes would be global.
+                but I will leave it since I don't want to delete all my work
+            <script>
+            function deletechosenRow() {
+                // Gets the whole table
+                var table = document.getElementById("newtable");
+                //Index of row to delete. Since the header is 0, I will make that off limits.
+                var rowIndex = prompt("Enter the index of the row you want to delete:");
+                // Makes it so you can't delete the header
+                if (rowIndex == 0) {
+                    alert("You can't delete the header!")
+                }
+
+                else if (rowIndex != null && rowIndex >= 1 && rowIndex < table.rows.length) {
+                    // Gets the row we want to delete
+                    var row = table.rows[rowIndex];
+
+                    // Gets the cell with  from the row since its the last cell
+                    var cellwithTime = row.cells[row.cells.length - 1];
+
+                    // gets the actual value from the cell.
+                    // Could make this all one but it would be a complicated line
+                    var time = parseFloat(cellwithTime.innerText);
+
+                    // This actaully deletes the row
+                    table.deleteRow(rowIndex);
+
+                    //This gets the value of the total time by its id. It won't be changed yet
+                    // We need to convert the string to float first. innerText gets whats inside cell
+                    // Gets the whole value of the total time cell
+                    var totalTimeStr = document.getElementById("totalTime").innerText;
+
+                    // replace gets rid of all non numeric chars (besides decimal point) replacing them with an empty string.
+                    // We then change this numeric string to a float
+                    totalTime = parseFloat(totalTimeStr.replace(/[^\d.]/g, ''));
+
+                    // This calculates the new time
+                    var newtotalTime = totalTime - time;
+
+                    // We put in our new value into totalTime. toFixed rounds to 1 decimals.
+                    // We put string there so it will look the same as before
+                    document.getElementById("totalTime").innerText = "Total Time: " + newtotalTime.toFixed(1);
+
+                }
+                // Means you inputed something out of the index
+                else {
+                    alert("Please enter a valid row index between 1 and number of songs you have.");
+                }
+            }
+            </script>-->
+        <div class="row justify-content-center">
+            <table id="newtable">
+                <thead>
+                    <tr>
+                        <th>LABEL</th>
+                        <th>FORMAT</th>
+                        <th>NUMBER</th>
+                        <th>PERIOD</th>
+                        <th>COMPOSER</th>
+                        <th>WORK</th>
+                        <th>PERFORMERS</th>
+                        <th>DURATION (IN MINUTES)</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <!--Last two are straight list here. trying to go through each since there all same length-->
+                    <!--totals|length gives its length. batch should make a new row every 5 items | batch(5, '&nbsp;'-->
+                    {% for i in range(0, program|length) %}
+                    <tr>
+                        <td class="td">{{ program[i]["Label"] }}</td>
+                        <td class="td">{{ program[i]["Format"] }}</td>
+                        <td class="td">{{ program[i]["Number"] }}</td>
+                        <td class="td">{{ program[i]["Period"] }}</td>
+                        <td class="td">{{ program[i]["Composer"] }}</td>
+                        <td class="td">{{ program[i]["Work"] }}</td>
+                        <td class="td">{{ program[i]["Performers"] }}</td>
+                        <td class="td">{{ program[i]["Time"] }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td class="td"></td>
+                        <td class="td"></td>
+                        <td class="td"></td>
+                        <td class="td"></td>
+                        <td class="td"></td>
+                        <td class="td"></td>
+                        <td class="td"></td>
+                        <td class="td" id="totalTime">Total Time: {{ time }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!--<input type="button" value="Delete Row" onclick="deletechosenRow()"> -->
+
+            <form action="/delete" method="post">
+                <div class="mb-3">
+                    <p>Input the number of rows you want to delete, with a maximum length equal to the number of rows of your program!</p>
+                    <input autocomplete="off" autofocus id="index" name="index" class="form-control mx-auto w-auto" placeholder="Index (Starts at 0)" type="number" min="0">
+                </div>
+                <button class="btn btn-primary" type="submit">Delete Row</button>
+            </form>
+        </div>
+{% endblock %}

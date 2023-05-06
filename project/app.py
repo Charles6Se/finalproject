@@ -11,7 +11,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
 import random
-from helpers import apology, login_required, lookup, usd
+from helpers import apology, login_required
 
 # Global Variables
 # These will be used to store your last two programs in case you accidentally leave the app
@@ -20,11 +20,13 @@ from helpers import apology, login_required, lookup, usd
 HISTORY_1 = []
 HISTORY_2 = []
 
+# These will store the total time for the history section
+TOTAL_TIME_1 = 0
+TOTAL_TIME_2 = 0
+
 # Configure application
 app = Flask(__name__)
 
-# Custom filter
-app.jinja_env.filters["usd"] = usd
 
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_PERMANENT"] = False
@@ -32,11 +34,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///finance.db")
-
-# Make sure API key is set
-if not os.environ.get("API_KEY"):
-    raise RuntimeError("API_KEY not set")
+db = SQL("sqlite:///users.db")
 
 
 @app.after_request
@@ -51,12 +49,13 @@ def after_request(response):
 @app.route("/")
 @login_required
 def index():
-    return render_template('index.html')
+    # Just renders the index template
+    return render_template("index.html")
 
 
-@app.route("/quote", methods=["GET", "POST"])
+@app.route("/generate", methods=["GET", "POST"])
 @login_required
-def quote():
+def generate():
     # Open database csv file:
     if request.method == "POST":
         with open("checkov.csv") as checkov:
@@ -74,45 +73,71 @@ def quote():
             counter = True
 
             # Length they input
-            inputted_duration = float(request.form.get("length"))
+            # I make sure they put in a not null value
+            try:
+                inputted_duration = float(request.form.get("length"))
+
+                # Makes sure they don't change the HTML to go less than 1
+                if inputted_duration < 1:
+                    return render_template("generate.html")
+
+            # if they did a null value just return them to where they are
+            except:
+                return render_template("generate.html")
 
             # Empty list for our program
             program = []
 
-            # to make sure we can have consistent periods
+            # to make sure we can have consistent periods no more than 2 apart
             oldPeriod = 0
 
-            # this keeps track of programs total time
-            total_time = 0
+            # Declares two global variables so we can access them in any function for the time of program
+            global TOTAL_TIME_1
+            global TOTAL_TIME_2
 
+            # saves the previous total time in the other global variable
+            # So we can have the history
+            TOTAL_TIME_2 = TOTAL_TIME_1
+
+            # Set time 1 to 0
+            TOTAL_TIME_1 = 0
             # This while loop goes through until our program is finished adding each prospective entry
             while inputted_duration >= 0:
+                # Genereates a random row from the database
                 row = random.randint(0, len(checkov_list))
 
                 # This is the row from the csv that randomly is genereated with all the info for the piece we will use
                 # piece is a dict
                 piece = checkov_list[row]
 
+                # Gets the period of our piece
                 period = int(piece["Period"])
 
-                if abs((period - oldPeriod) <= 2) or counter:
-                    # Casts to flaot, trying to get rid of error
+                # We check the difference absolute value of the last period and current
+                # We only do it if it is less than or equal to 2.
+                # Counter will only happen in the first so we can get any period, but is turned false after the first run
+                if abs(period - oldPeriod) <= 2 or counter:
+                    # We do try except since some rows do not have a duration value so will give a value error.
                     try:
+                        # Gets time of particular piece
+                        time = float(piece["Time"])
+
                         # This makes it so the first piece isn't constrained by any
                         counter = False
 
-                        time = float(piece["Time"])
-                        total_time += time
+                        # Adds it to the total
+                        TOTAL_TIME_1 += time
 
                         # updates new duration
                         inputted_duration -= time
 
-                        # This makes it so the duration never goes to far over inputted
+                        # This makes it so the duration never goes too far over inputted
                         if inputted_duration < -2:
                             # Since we didn't use the piece we remove the duration change
                             inputted_duration += time
+                            # Just in case we don't use the piece we remove the time from it
+                            TOTAL_TIME_1 -= time
 
-                            total_time -= time
 
                         else:
                             # Updates period so we can keep our distribution
@@ -121,28 +146,65 @@ def quote():
                             # Adds current piece to list (a list of dicts)
                             program.append(piece)
 
-                    except ValueError:
+                    except:
                         print('Row is missing a duration entry and is empty string so we cannot use it!')
 
             # This rounds to remove floating point inpercision sometiems
-            total_time = round(total_time, 1)
+            TOTAL_TIME_1 = round(TOTAL_TIME_1, 1)
 
             # The History global lists are to store the last two programs. We will put whatever was in HISTORY_1
             # into HISTORY_2 and then but program into one. (the first time History 1 is blank)
             # This gives you some insurance in case you close the app
+
+            # We need to refrence them first with global
             global HISTORY_2
             global HISTORY_1
+
+            # Sets are history variables. The first becoems the second here
             HISTORY_2 = HISTORY_1
             HISTORY_1 = program
 
-            print(type(program))
-            # We return all the data including the label since this is built for a
-            return render_template("quoted.html", program=program, time=total_time)
+            # We return all the data including the label of each song since it is built for a radio show
+            return render_template("generated.html", program=program, time=TOTAL_TIME_1)
 
             # The file is auto closed when return from the with statement
 
     else:
-        return render_template("quote.html")
+        # This is if you go to page by get
+        return render_template("generate.html")
+
+
+@app.route("/delete", methods=["POST"])
+@login_required
+def delete():
+    # I remove the get method since it shouldn't be used ever. If someone does they will get a 405 error message
+    global HISTORY_1
+    global TOTAL_TIME_1
+
+
+    # We go from 0 to one less than length so these aren't allowed
+    # We use a try except since if you input null index will have a value error
+    try:
+        index = int(request.form.get("index"))
+        if index < 0 or index >= len(HISTORY_1):
+            # We render exactly what we had before since its not in the list
+            # This is in case someone changes HTML
+            return render_template("generated.html", program=HISTORY_1, time=TOTAL_TIME_1)
+
+        # We remove the inputted index from the History global and we pass into render template
+        removed = HISTORY_1.pop(index)
+
+        # this updates total time
+        time = float(removed["Time"])
+        TOTAL_TIME_1 -= time
+
+
+        return render_template("generated.html", program=HISTORY_1, time=round(TOTAL_TIME_1, 1))
+
+    except:
+        # Keeps the old one if you don't give an index
+        return render_template("generated.html", program=HISTORY_1, time=TOTAL_TIME_1)
+
 
 
 @app.route("/history")
@@ -150,8 +212,8 @@ def quote():
 def history():
     # Shows the history of the last two programs
 
-    # Passes in the data to history
-    return render_template("history.html", HISTORY_1=HISTORY_1, HISTORY_2=HISTORY_2)
+    # Passes in the data to history with the programs and their total times
+    return render_template("history.html", HISTORY_1=HISTORY_1, HISTORY_2=HISTORY_2, TOTAL_TIME_1=round(TOTAL_TIME_1, 1), TOTAL_TIME_2=round(TOTAL_TIME_2, 1))
 
 
 
@@ -191,6 +253,7 @@ def login():
         return render_template("login.html")
 
 
+
 @app.route("/logout")
 def logout():
     """Log user out"""
@@ -200,8 +263,6 @@ def logout():
 
     # Redirect user to login form
     return redirect("/")
-
-
 
 
 

@@ -1,24 +1,19 @@
-/* head
-{
-  background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-  color: #fff;
-  font-family: Brush Script MT, Brush Script Std, cursive;
-  font-size: 106px;
-  margin-bottom: 2rem;
-  padding: 2rem 1rem;
-  text-align: center;
-} */
-
 /* Size for brand */
+nav
+{
+    font-size: xx-large;
+    font-family: Brush Script MT, Brush Script Std, cursive;
+}
+
 nav .navbar-brand
 {
     font-size: xx-large;
 }
 
 /* Colors for brand */
-nav .navbar-brand .blue
+nav .navbar-brand .white
 {
-    color: #537fbe;
+    color: #FFFFF0;
 }
 nav .navbar-brand .red
 {
@@ -33,6 +28,11 @@ nav .navbar-brand .green
     color: #2e944b;
 }
 
+.navbar-brand {
+  margin-left: auto;
+}
+
+
 #symbol {
   width: 200px; /* adjust the value as needed */
 }
@@ -45,9 +45,7 @@ table {
   }
 
   th {
-    /* background-color: #4287f5; */
     color: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-    /* color: white; */
   }
 
   th,
@@ -55,6 +53,7 @@ table {
     width: 150px;
     text-align: center;
     border: 1px solid black;
+    color: 1px solid black;
     padding: 5px;
   }
 
@@ -62,10 +61,7 @@ table {
     color: #4287f5;
   }
 
-
-
-
-  .dropdown {
+.dropdown {
     color: #FFFFF0;
     font-family: Brush Script MT, Brush Script Std, cursive;
 }
@@ -80,21 +76,15 @@ table {
     text-align: center;
 }
 
+
 body {
-    color: #FFFFF0;
-    font-family: URW Chancery L, cursive;
+    color: #89CFF0;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.5;
     margin: 0;
     text-align: center;
-
-    /* set background image as blurred sunset */
-    background-image: url("Piano_keys.jpg");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    backdrop-filter: blur(8px);
 }
 
 .container {

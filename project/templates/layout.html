@@ -16,39 +16,46 @@
         <link href="/static/styles.css" rel="stylesheet">
         <link href="/helpers.py" rel="functions">
 
-        <title>Music Website: {% block title %}{% endblock %}</title>
+        <title>MyProgramMaker</title>
     </head>
 
-    <body>
+    <!-- <body style="background-color:aquamarine;"> -->
+    <body style="background-color:#002244;">
 
-        <nav class="bg-light border navbar navbar-expand-md navbar-light">
-            <!-- <div class="container-fluid"> -->
+        <nav class="navbar navbar-dark navbar-expand-md bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <span class="white">My</span>
+                    <span class="red">Program</span>
+                    <span class="yellow">Maker</span>
+                </a>
 
-            <div class="header">
+                <button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1">
+                    <span class="sr-only"></span>
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-                <h2>
-                    <a class="navbar-brand" href="/"><span class="blue">Music</span><span class="red"></span><span class="yellow">5</span><span class="green">0</span> <span class="red"></span></a>
-                    <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <!-- <div class="collapse navbar-collapse" id="navbar"> -->
+                <div class="collapse navbar-collapse" id="navcol-1">
+
                         {% if session["user_id"] %}
-                            <ul class="navbar-nav me-auto mt-2">
-                                <!-- class="nav-link" -->
-                                <li class="nav-item"><a href="/quote" class="rounded-pill">Generate Program</a></li>
+
+                            <ul class="navbar-nav ms-auto mt-2">
+                                <li class="nav-item"><a href="/generate" class="rounded-pill">Generate Program</a></li>
                                 <li class="nav-item"><a href="/history" class="rounded-pill">Program History</a></li>
                             </ul>
+
                             <ul class="navbar-nav ms-auto mt-2">
-                                <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
+                                <li class="nav-item"><a class="navbar-brand" href="/logout">Log Out</a></li>
                             </ul>
+
                         {% else %}
                             <ul class="navbar-nav ms-auto mt-2">
-                                <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
-                                <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
+                                <li class="nav-item"><a href="/register" class="rounded-pill">Register</a></li>
+                                <li class="nav-item"><a href="/login" class="rounded-pill">Log In</a></li>
                             </ul>
                         {% endif %}
-                    <!-- </div> -->
-                <h2>
+
+                </div>
             </div>
         </nav>
 
